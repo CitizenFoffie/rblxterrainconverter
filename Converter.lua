@@ -6,10 +6,10 @@ local size = material.Size
 local Budget = 1/60 -- seconds
 
 local expireTime = 0
-function ResetTimer()
+local function ResetTimer()
 	expireTime = tick() + Budget
 end
-function MaybeYield()
+local function MaybeYield()
 	if tick() >= expireTime then
 		wait() -- insert preferred yielding method
 		ResetTimer()
