@@ -1,7 +1,7 @@
 --scripted by goos_honk
 --thank you to soliddshibe for getting the legacy terrain textures for this game
 --play shinjuku 2006 on soliddshibe profile it is good game
---not written by CitizenFoffie
+
 
 --[[
 TO DO:
@@ -983,7 +983,6 @@ script.PlaceTerrainBlock.Event:Connect(function(mat,pos)
 	createPart(pos,mat)
 end)
 script.PlaceTerrainBlock2.Event:Connect(function(pos,mat)
-	print("block")
 	createPart(pos,mat)
 end)
 script.DeleteBlock.Event:Connect(function(block)
@@ -1012,7 +1011,40 @@ end)
 script.PlaceTerrainHRamp2.Event:Connect(function(mat,pos,rot)
 	createHorizWedge(pos,mat,rot)
 end)
+local region = Region3.new(Vector3.new(0,-1,0), Vector3.new(600,512,600))
+region = region:ExpandToGrid(4)
+local material, occupancy = game.Workspace.Terrain:ReadVoxels(region, 4)
+local size = material.Size
+local Budget = 1 -- seconds
 
+local expireTime = 0
+function ResetTimer()
+	expireTime = tick() + Budget
+end
+function MaybeYield()
+	if tick() >= expireTime then
+		wait() -- insert preferred yielding method
+		ResetTimer()
+	end
+end
+for x = 1, size.X do
+	for y = 1, size.Y do
+		for z = 1, size.Z do
+			if material[x][y][z] ~= Enum.Material.Air then
+				--print("Material at (", x, y, z, "): ", material[x][y][z])
+				local pos = game.Workspace.Terrain:CellCenterToWorld(x,y,z)
+				--local part = Instance.new("Part")
+				--part.Size = Vector3.new(4,4,4)
+				--part.Anchored = true
+				--part.Parent = game.Workspace
+				--part.Position = pos
+				createPart(pos,"MegaGrass")
+				
+
+			end
+		end
+	end
+end
 
 while true do
 	wait(10)
